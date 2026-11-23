@@ -1247,31 +1247,27 @@ function renderMemory() {
 function moveMemory(step) { memoryIndex=(memoryIndex+step+memoryPhotos.length)%memoryPhotos.length; renderMemory(); }
 renderMemory();
 
-/* BACKGROUND MUSIC */
+
+/* BACKGROUND MUSIC - ANDROID + IOS FIX */
 
 const music = document.getElementById('weddingMusic');
 
-async function startWeddingMusic() {
-  try {
+function playWeddingMusic() {
+    if (!music) return;
+
     music.volume = 0.75;
-    await music.play();
-  } catch (error) {
-    // Browsers commonly block audible autoplay until the visitor interacts.
-  }
+
+    music.play().catch((error) => {
+        console.log("Music playback failed:", error);
+    });
 }
-function enableMusicAfterFirstInteraction() {
-  if (music.paused) {
-    music.volume = 0.75;
-    music.play().catch(() => {});
-  }
-  document.removeEventListener('pointerdown', enableMusicAfterFirstInteraction);
-  document.removeEventListener('keydown', enableMusicAfterFirstInteraction);
-  document.removeEventListener('touchstart', enableMusicAfterFirstInteraction);
-}
-window.addEventListener('load', startWeddingMusic);
-document.addEventListener('pointerdown', enableMusicAfterFirstInteraction, { once: true });
-document.addEventListener('keydown', enableMusicAfterFirstInteraction, { once: true });
-document.addEventListener('touchstart', enableMusicAfterFirstInteraction, { once: true });
+
+window.addEventListener('load', playWeddingMusic);
+
+document.addEventListener('click', playWeddingMusic, true);
+document.addEventListener('touchend', playWeddingMusic, true);
+document.addEventListener('pointerdown', playWeddingMusic, true);
+
 
 </script>
 
